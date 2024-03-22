@@ -1,12 +1,12 @@
 import Phaser from "phaser";
 
-import HelloWorldScene from "./scenes/HelloWorldScene";
+import Level from "./scenes/Level";
 import UI from "./scenes/UI";
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: window.innerWidth,
+  height: window.innerHeight,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -20,13 +20,14 @@ const config = {
     },
   },
   physics: {
-    default: "arcade",
-    arcade: {
-      gravity: { y: 200 },
-      debug: false,
+    default: "matter",
+    enableSleeping: true,
+    matter: {
+      gravity: { y: 0, x: 0},
+      debug: true,
     },
   },
-  scene: [HelloWorldScene, UI],
+  scene: [Level, UI],
 };
 
 export default new Phaser.Game(config);
