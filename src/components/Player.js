@@ -14,7 +14,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
   #target;
 
-  #bullets;
+  bullets;
 
   #worldPointer;
 
@@ -26,41 +26,27 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     super(scene.matter.world, x, y, texture);
     scene.add.existing(this);
 
-    const {Bodies} = Phaser.Physics.Matter.Matter;
-    const circleCollider = Bodies.circle(0, 0, this.width * 0.5);
-    
-    this.setExistingBody(circleCollider);
-    this.setBody({ type: 'rectangle', radius: this.width * 0.5 });
+    this.setBody({ type: "rectangle" });
 
     this.#life = 20;
     this.#nbullets = 50;
     this.#speed = 20;
-    this.#bullets = this.scene.add.group();
-
+    this.bullets = this.scene.add.group();
 
     this.#inpKeys = scene.input.keyboard.addKeys("W,A,S,D");
     this.MouseInputController();
+    this.setCollisionCategory(2);
+    this.setCollidesWith([1]);
   }
 
   update(time, delta) {
     this.KeysInputController();
-
 
     this.rotation = Phaser.Math.Angle.RotateTo(
       this.rotation,
       this.#target,
       ROTATION_SPEED * 0.001 * delta
     );
-    
-    /*  this.#bullets.getFirstAlive().body.world.on('worldbounds', (body)=> {
-      // Checks if it's the sprite that you'listening for
-      if (body.gameObject === this) {
-        // Make the enemy sprite unactived & make it disappear
-        this.setActive(false);
-        this.setVisible(false);
-      }
-    }, this.#bullets.getFirstAlive());  */
-
   }
 
   MouseInputController() {
@@ -88,22 +74,18 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
       this.setVelocityY(-this.#speed);
     } else if (this.#inpKeys.S.isDown) {
       this.setVelocityY(this.#speed);
-    } else {
-      this.setVelocityY(0);
-    }
-
-    if (this.#inpKeys.A.isDown) {
+    } else if (this.#inpKeys.A.isDown) {
       this.setVelocityX(-this.#speed);
     } else if (this.#inpKeys.D.isDown) {
       this.setVelocityX(this.#speed);
     } else {
-      this.setVelocityX(0);
+      this.setVelocity(0);
     }
   }
 
   fireBullet() {
-    const bullet = new Bullet(this.scene, this.x, this.y, 1, 1, "0xffff00");
-    this.#bullets.add(bullet);
+    const bullet = new Bullet(this.scene, this.x, this.y, "bullet");
+    this.bullets.add(bullet);
 
     bullet.setVelocity(
       Math.cos(this.#angleToPointer) * 20,

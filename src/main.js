@@ -15,15 +15,15 @@ const config = {
       height: 600,
     },
     max: {
-      width: 1600,
-      height: 1200,
+      width: 1920,
+      height: 1080,
     },
   },
   physics: {
     default: "matter",
     enableSleeping: true,
     matter: {
-      gravity: { y: 0, x: 0},
+      gravity: { y: 0, x: 0 },
       debug: true,
     },
   },
