@@ -24,7 +24,7 @@ const config = {
     enableSleeping: true,
     matter: {
       gravity: { y: 0, x: 0 },
-      debug: true,
+      debug: false,
     },
   },
   scene: [Level, UI],

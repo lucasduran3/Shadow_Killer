@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import Player from "../components/Player";
+import Enemy from "../components/Enemy";
 
 export default class Level extends Phaser.Physics.Matter.World {
   worldBounds;
@@ -36,11 +37,12 @@ export default class Level extends Phaser.Physics.Matter.World {
     const floorL = this.map.addTilesetImage("floor", "floor");
     const wallL = this.map.addTilesetImage("wall", "wall");
 
-    // eslint-disable-next-line no-unused-vars
-    const floorLayer = this.map.createLayer("floor", floorL, 0, 0);
+    this.map.createLayer("floor", floorL, 0, 0);
     const wallLayer = this.map.createLayer("wall", wallL, 0, 0);
     wallLayer.setCollisionByProperty({ colision: true });
     this.matter.world.convertTilemapLayer(wallLayer);
+
+    this.objectsLayer = this.map.getObjectLayer("objects");
 
     const playerSpawnPoint = this.map.findObject(
       "objects",
@@ -53,9 +55,30 @@ export default class Level extends Phaser.Physics.Matter.World {
       playerSpawnPoint.y,
       "player"
     );
+
+    this.time.addEvent({
+      delay: 2000,
+      callback: this.spawnEnemy,
+      callbackScope: this,
+      repeat: -1,
+    });
   }
 
   update(time, delta) {
     this.player.update(time, delta);
+  }
+
+  spawnEnemy() {
+    this.objectsLayer.objects.forEach((objData) => {
+      const { x = 0, y = 0, name } = objData;
+      switch (name) {
+        case "enemy": {
+          this.enemy = new Enemy(this, x, y, "player", this.player);
+          break;
+        }
+        default:
+          console.log("");
+      }
+    });
   }
 }
